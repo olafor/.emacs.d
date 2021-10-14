@@ -1,3 +1,7 @@
 repositories/*
 *~
 *\#
+org/*~
+org/*\#
+*.tex
+*.pdf

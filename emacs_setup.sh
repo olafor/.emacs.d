@@ -1,15 +1,32 @@
 #!/usr/bin/env bash
 
-sudo apt update
+## BASICS
+apt update
+apt install emacs texlive-latex-recommended texlive-latex-extra \
+    texlive-fonts-recommended texlive-base texlive-latex-base
 
-sudo apt install emacs git
+## DIRECTORIES
+if [ ! -d "repositories" ]; then
+    mkdir repositories
+fi
 
-mkdir repositories
+if [ ! -d "themes" ]; then
+    mkdir themes
+fi
 
-mkdir themes
+## REPOSITORIES
+if [ ! -d "repositories/evil" ]; then
+    git clone https://github.com/emacs-evil/evil.git repositories/evil
+fi
 
-git clone git@github.com:GuiltyDolphin/org-evil.git repositories/org-evil
+if [ ! -d "repositories/dash" ]; then
+    git clone https://github.com/magnars/dash.el.git repositories/dash
+fi
 
-git clone git@github.com:magnars/dash.el.git repositories/dash
+if [ ! -d "repositories/org-evil" ]; then
+    git clone https://github.com/GuiltyDolphin/org-evil.git repositories/org-evil
+fi
 
-git clone git@github.com:ivanmarcin/emacs-tron-theme.git repositories/themes/tron-theme
+if [ ! -d "repositories/themes/tron-theme" ]; then
+    git clone https://github.com/ivanmarcin/emacs-tron-theme.git repositories/themes/tron-theme
+fi

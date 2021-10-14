@@ -1,0 +1,103 @@
+#+TITLE: EMACS CONFIGURATION
+#+SEQ_TODO: TODO(t) STARTED(s) WAITING(w) APPT(a) | DONE(d) CANCELLED(c) DEFERRED(f)
+#+PROPERTY: Effort_ALL 0 0:10 0:20 0:30 1:00 2:00 4:00 6:00 8:00
+#+OPTIONS: toc:nil
+
+* Personlig
+#+BEGIN_SRC emacs-lisp
+(setq user-full-name "Ola Fornander")
+(setq user-email-address "ofornander@gmail.com") 
+#+END_SRC
+
+* Repositories
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/repositories/evil")
+(require 'evil)
+(evil-mode 1)
+
+(add-to-list 'load-path "~/.emacs.d/repositories/dash")
+(require 'dash)
+
+(add-to-list 'load-path "~/.emacs.d/repositories/org-evil")
+(require 'org-evil)
+
+(add-to-list 'custom-theme-load-path "~/.emacs.d/repositories/themes/tron-theme")
+#+END_SRC
+
+* Basic Form
+#+BEGIN_SRC emacs-lisp
+(setq column-number-mode t)
+(display-time-mode 1)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(set-face-attribute 'default nil :height 120)
+(setq inhibit-splash-screen t)
+#+END_SRC
+
+* Custom Set Variables
+#+BEGIN_SRC emacs-lisp
+(custom-set-variables
+  '(inhibit-startup-screen t)
+  '(display-time-24hr-format t)
+
+)
+#+END_SRC
+
+* Custom Set Faces
+#+BEGIN_SRC emacs-lisp
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+#+END_SRC
+
+* Theme
+#+BEGIN_SRC emacs-lisp
+(load-theme 'tron t)
+#+END_SRC
+
+* Tex
+#+begin_src emacs-lisp
+;;; AUCTEX
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq-default TeX-master nil)
+
+(add-hook 'LaTeX-mode-hook 'visual-line-mode)
+(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+(setq reftex-plug-into-AUCTeX t)
+
+(setq TeX-PDF-mode t)
+#+END_SRC
+
+* Mappings
+#+BEGIN_SRC emacs-lisp
+(defun fullscreen ()
+  (interactive)
+  (set-frame-parameter nil 'fullscreen
+		       (if (frame-parameter nil 'fullscreen) nil 'fullboth))
+  (progn
+    (if fboundp 'tool-bar-mode) (tool-bar-mode -1))
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+)
+(global-set-key [f11] 'fullscreen)
+#+END_SRC
+* Orgmode
+#+BEGIN_SRC plantuml :file test.png
+@startuml
+Alice -> Bob: Authentication Request
+Bob --> Alice: Authentication Response
+
+Alice -> Bob: Another authentication Request
+Alice <-- Bob: Another authentication Response
+@enduml
+#+END_SRC
+
+
