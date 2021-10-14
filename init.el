@@ -1,17 +1,17 @@
 (setq user-full-name "Carl Ola Fornander")
 (setq user-email-address "ofornander@gmail.com")
 
-(add-to-list 'load-path "~/.emacs.d/evil")
+(add-to-list 'load-path "~/.emacs.d/repositories/evil")
 (require 'evil)
 (evil-mode 1)
 
-(add-to-list 'load-path "~/.emacs.d/dash")
+(add-to-list 'load-path "~/.emacs.d/repositories/dash")
 (require 'dash)
 
-(add-to-list 'load-path "~/.emacs.d/org-evil")
+(add-to-list 'load-path "~/.emacs.d/repositories/org-evil")
 (require 'org-evil)
 
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/tron-theme")
+(add-to-list 'custom-theme-load-path "~/.emacs.d/repositories/themes/tron-theme")
 
 (setq column-number-mode t)
 (display-time-mode 1)
