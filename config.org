@@ -1,21 +1,26 @@
 #+TITLE: EMACS CONFIGURATION
-#+SEQ_TODO: TODO(t) STARTED(s) WAITING(w) APPT(a) | DONE(d) CANCELLED(c) DEFERRED(f)
-#+PROPERTY: Effort_ALL 0 0:10 0:20 0:30 1:00 2:00 4:00 6:00 8:00
 #+OPTIONS: toc:nil
 
 * Packages
 ** Melpa
 #+BEGIN_SRC emacs-lisp
-  (dolist (package '(evil dash helm transient with-editor magit org-bullets))
-   (unless (package-installed-p package)
-     (package-install package))
-     (require package))
+	(dolist (package '(evil dash helm transient with-editor
+    magit org-bullets engine-mode rainbow-delimiters projectile
+    doom-modeline))
+	 (unless (package-installed-p package)
+	   (package-install package))
+	   (require package))
   
-  (require 'evil)
-  (evil-mode 1)
-  (require 'dash)
-  (require 'org-bullets)
-  (require 'helm)
+	(require 'evil)
+	(evil-mode 1)
+	(require 'dash)
+	(require 'org-bullets)
+	(require 'helm)
+      (use-package evil-surround
+	:ensure t
+	:config
+	(global-evil-surround-mode 1))
+    (require 'evil-surround)
 #+END_SRC
 ** Apt
 #+BEGIN_SRC bash
@@ -59,6 +64,9 @@ apt install $APT_PACKAGES
 
 ** Themes
 #+BEGIN_SRC emacs-lisp
+  (require 'doom-modeline)
+  (doom-modeline-mode 1)
+  ;all-the-icons-install-fonts
 #+END_SRC
 
 * Custom Set Variables
@@ -114,42 +122,63 @@ apt install $APT_PACKAGES
 *** General
 #+BEGIN_SRC emacs-lisp
   (require 'org)
-  
-  (defun org-summary-todo (n-done n-not-done)
-    "Switch entry to DONE when all subentries are done, to TODO otherwise."
-    (let (org-log-done org-log-states)   ; turn off logging
-      (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
-  
-  (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
-  
-  (setq org-journal-dir "~/.org")
-  
-  (setq org-clock-persist 'history)
-  (org-clock-persistence-insinuate)
-  
-  (define-key global-map "\C-cl" 'org-store-link)
-  (define-key global-map "\C-ca" 'org-agenda)
-  
-  (setq org-log-done t)
-  (setq org-list-indent-offset 1)
-  
-  (setq org-agenda-start-day "-d")
-  (setq org-agenda-span 8)
-  (setq org-agenda-start-on-weekday 1)
-  
-  (add-to-list 'org-modules 'org-habit)
+  (org-babel-load-file "~/org/org_config.org")
 #+END_SRC
 
 ** Org Babel
 #+BEGIN_SRC emacs-lisp
-(org-babel-do-load-languages 'org-babel-load-languages
-    '(
-        (shell . t)
-    )
-)
+  (org-babel-do-load-languages 'org-babel-load-languages
+      '(
+  (shell . t)
+  (plantuml . t)))
+  
+(setq org-plantuml-jar-path (expand-file-name "~/plantuml.jar"))
+(add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
 #+END_SRC
+** test plantuml
+#+BEGIN_SRC plantuml :file my-diagram.png
+participant Participant as Foo
+actor       Actor       as Foo1
+boundary    Boundary    as Foo2
+control     Control     as Foo3
+entity      Entity      as Foo4
+database    Database    as Foo5
+collections Collections as Foo6
+queue       Queue       as Foo7
+Foo -> Foo1 : To actor 
+Foo -> Foo2 : To boundary
+Foo -> Foo3 : To control
+Foo -> Foo4 : To entity
+Foo -> Foo5 : To database
+Foo -> Foo6 : To collections
+Foo -> Foo7: To queue
+#+END_SRC
+
+#+CAPTION: This is the caption for the next table (or link)
+[[file:my-diagram.png]]
 
 * Helm
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "M-x") 'helm-M-x)
 #+END_SRC
+
+* Engine-mode
+#+BEGIN_SRC emacs-lisp
+(require 'engine-mode)
+(engine-mode t)
+  (defengine duckduckgo
+    "https://duckduckgo.com/?q=%s"
+    :keybinding "d")
+#+END_SRC
+
+* Ido
+#+BEGIN_SRC emacs-lisp
+(require 'ido)
+(ido-mode t)
+#+END_SRC
+
+* Rainbow-delimiters
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+#+END_SRC
+

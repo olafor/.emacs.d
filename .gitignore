@@ -1,7 +1,10 @@
 elpa/*
 transient/*
 org/*
+bookmarks
 *~
 *\#
 *.tex
 *.pdf
+*.png
+*.eld

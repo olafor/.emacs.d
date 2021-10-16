@@ -16,7 +16,9 @@
  ;; If there is more than one, they won't work right.
  '(display-time-24hr-format t)
  '(inhibit-startup-screen t)
- '(package-selected-packages (quote (use-package org-bullets org magit helm evil))))
+ '(package-selected-packages
+   (quote
+    (doom-modeline doom-modelin projectile rainbow-delimiter evil-surround engine-mode use-package org-bullets org magit helm evil))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

@@ -1,13 +1,19 @@
-(dolist (package '(evil dash helm transient with-editor magit org-bullets))
- (unless (package-installed-p package)
-   (package-install package))
-   (require package))
+(dolist (package '(evil dash helm transient with-editor magit org-bullets engine-mode rainbow-delimiters projectile
+doom-modeline))
+     (unless (package-installed-p package)
+       (package-install package))
+       (require package))
 
-(require 'evil)
-(evil-mode 1)
-(require 'dash)
-(require 'org-bullets)
-(require 'helm)
+    (require 'evil)
+    (evil-mode 1)
+    (require 'dash)
+    (require 'org-bullets)
+    (require 'helm)
+  (use-package evil-surround
+    :ensure t
+    :config
+    (global-evil-surround-mode 1))
+(require 'evil-surround)
 
 (setq user-full-name "Carl Ola Fornander")
 (setq user-email-address "ofornander@gmail.com")
@@ -24,7 +30,8 @@
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 (org-bullets-mode t)
 
-;(load-theme 'tron t)
+(require 'doom-modeline)
+(doom-modeline-mode 1)
 
 (custom-set-variables
   '(inhibit-startup-screen t)
@@ -65,35 +72,25 @@
 (global-set-key [f11] 'fullscreen)
 
 (require 'org)
-
-(defun org-summary-todo (n-done n-not-done)
-  "Switch entry to DONE when all subentries are done, to TODO otherwise."
-  (let (org-log-done org-log-states)   ; turn off logging
-    (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
-
-(add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
-
-(setq org-journal-dir "~/.org")
-
-(setq org-clock-persist 'history)
-(org-clock-persistence-insinuate)
-
-(define-key global-map "\C-cl" 'org-store-link)
-(define-key global-map "\C-ca" 'org-agenda)
-
-(setq org-log-done t)
-(setq org-list-indent-offset 1)
-
-(setq org-agenda-start-day "-d")
-(setq org-agenda-span 8)
-(setq org-agenda-start-on-weekday 1)
-
-(add-to-list 'org-modules 'org-habit)
+(org-babel-load-file "~/org/org_config.org")
 
 (org-babel-do-load-languages 'org-babel-load-languages
-    '(
-        (shell . t)
-    )
-)
+      '(
+  (shell . t)
+  (plantuml . t)))
+  
+(setq org-plantuml-jar-path (expand-file-name "~/plantuml.jar"))
+(add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
 
 (global-set-key (kbd "M-x") 'helm-M-x)
+
+(require 'engine-mode)
+(engine-mode t)
+  (defengine duckduckgo
+    "https://duckduckgo.com/?q=%s"
+    :keybinding "d")
+
+(require 'ido)
+(ido-mode t)
+
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
