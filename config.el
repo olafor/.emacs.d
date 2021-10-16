@@ -1,17 +1,16 @@
-(setq user-full-name "Ola Fornander")
-(setq user-email-address "ofornander@gmail.com")
+(dolist (package '(evil dash helm transient with-editor magit org-bullets))
+ (unless (package-installed-p package)
+   (package-install package))
+   (require package))
 
-(add-to-list 'load-path "~/.emacs.d/repositories/evil")
 (require 'evil)
 (evil-mode 1)
-
-(add-to-list 'load-path "~/.emacs.d/repositories/dash")
 (require 'dash)
+(require 'org-bullets)
+(require 'helm)
 
-(add-to-list 'load-path "~/.emacs.d/repositories/org-evil")
-(require 'org-evil)
-
-(add-to-list 'custom-theme-load-path "~/.emacs.d/repositories/themes/tron-theme")
+(setq user-full-name "Carl Ola Fornander")
+(setq user-email-address "ofornander@gmail.com")
 
 (setq column-number-mode t)
 (display-time-mode 1)
@@ -20,6 +19,12 @@
 (scroll-bar-mode -1)
 (set-face-attribute 'default nil :height 120)
 (setq inhibit-splash-screen t)
+
+(require 'org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+(org-bullets-mode t)
+
+;(load-theme 'tron t)
 
 (custom-set-variables
   '(inhibit-startup-screen t)
@@ -33,8 +38,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
-(load-theme 'tron t)
 
 ;;; AUCTEX
 (setq TeX-auto-save t)
@@ -60,3 +63,37 @@
   (scroll-bar-mode -1)
 )
 (global-set-key [f11] 'fullscreen)
+
+(require 'org)
+
+(defun org-summary-todo (n-done n-not-done)
+  "Switch entry to DONE when all subentries are done, to TODO otherwise."
+  (let (org-log-done org-log-states)   ; turn off logging
+    (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
+
+(add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+
+(setq org-journal-dir "~/.org")
+
+(setq org-clock-persist 'history)
+(org-clock-persistence-insinuate)
+
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+
+(setq org-log-done t)
+(setq org-list-indent-offset 1)
+
+(setq org-agenda-start-day "-d")
+(setq org-agenda-span 8)
+(setq org-agenda-start-on-weekday 1)
+
+(add-to-list 'org-modules 'org-habit)
+
+(org-babel-do-load-languages 'org-babel-load-languages
+    '(
+        (shell . t)
+    )
+)
+
+(global-set-key (kbd "M-x") 'helm-M-x)

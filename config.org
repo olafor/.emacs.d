@@ -3,28 +3,43 @@
 #+PROPERTY: Effort_ALL 0 0:10 0:20 0:30 1:00 2:00 4:00 6:00 8:00
 #+OPTIONS: toc:nil
 
+* Packages
+** Melpa
+#+BEGIN_SRC emacs-lisp
+  (dolist (package '(evil dash helm transient with-editor magit org-bullets))
+   (unless (package-installed-p package)
+     (package-install package))
+     (require package))
+  
+  (require 'evil)
+  (evil-mode 1)
+  (require 'dash)
+  (require 'org-bullets)
+  (require 'helm)
+#+END_SRC
+** Apt
+#+BEGIN_SRC bash
+APT_PACKAGES=(
+    emacs
+    texlive-latex-recommended
+    texlive-latex-extra
+    texlive-fonts-recommended
+    texlive-base
+    texlive-latex-base
+)
+apt update
+apt install $APT_PACKAGES
+#+END_SRC
+
 * Personlig
 #+BEGIN_SRC emacs-lisp
-(setq user-full-name "Ola Fornander")
+(setq user-full-name "Carl Ola Fornander")
 (setq user-email-address "ofornander@gmail.com") 
 #+END_SRC
 
-* Repositories
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'load-path "~/.emacs.d/repositories/evil")
-(require 'evil)
-(evil-mode 1)
-
-(add-to-list 'load-path "~/.emacs.d/repositories/dash")
-(require 'dash)
-
-(add-to-list 'load-path "~/.emacs.d/repositories/org-evil")
-(require 'org-evil)
-
-(add-to-list 'custom-theme-load-path "~/.emacs.d/repositories/themes/tron-theme")
-#+END_SRC
-
-* Basic Form
+* Style
+** Basic Interface
+*** Native
 #+BEGIN_SRC emacs-lisp
 (setq column-number-mode t)
 (display-time-mode 1)
@@ -33,6 +48,17 @@
 (scroll-bar-mode -1)
 (set-face-attribute 'default nil :height 120)
 (setq inhibit-splash-screen t)
+#+END_SRC
+
+** Org Bullets Mode
+#+BEGIN_SRC emacs-lisp
+(require 'org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+(org-bullets-mode t)
+#+END_SRC
+
+** Themes
+#+BEGIN_SRC emacs-lisp
 #+END_SRC
 
 * Custom Set Variables
@@ -52,11 +78,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-#+END_SRC
-
-* Theme
-#+BEGIN_SRC emacs-lisp
-(load-theme 'tron t)
 #+END_SRC
 
 * Tex
@@ -90,14 +111,45 @@
 (global-set-key [f11] 'fullscreen)
 #+END_SRC
 * Orgmode
-#+BEGIN_SRC plantuml :file test.png
-@startuml
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
-
-Alice -> Bob: Another authentication Request
-Alice <-- Bob: Another authentication Response
-@enduml
+*** General
+#+BEGIN_SRC emacs-lisp
+  (require 'org)
+  
+  (defun org-summary-todo (n-done n-not-done)
+    "Switch entry to DONE when all subentries are done, to TODO otherwise."
+    (let (org-log-done org-log-states)   ; turn off logging
+      (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
+  
+  (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+  
+  (setq org-journal-dir "~/.org")
+  
+  (setq org-clock-persist 'history)
+  (org-clock-persistence-insinuate)
+  
+  (define-key global-map "\C-cl" 'org-store-link)
+  (define-key global-map "\C-ca" 'org-agenda)
+  
+  (setq org-log-done t)
+  (setq org-list-indent-offset 1)
+  
+  (setq org-agenda-start-day "-d")
+  (setq org-agenda-span 8)
+  (setq org-agenda-start-on-weekday 1)
+  
+  (add-to-list 'org-modules 'org-habit)
 #+END_SRC
 
+** Org Babel
+#+BEGIN_SRC emacs-lisp
+(org-babel-do-load-languages 'org-babel-load-languages
+    '(
+        (shell . t)
+    )
+)
+#+END_SRC
 
+* Helm
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-x") 'helm-M-x)
+#+END_SRC

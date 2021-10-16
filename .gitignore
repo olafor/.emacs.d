@@ -1,7 +1,7 @@
-repositories/*
+elpa/*
+transient/*
+org/*
 *~
 *\#
-org/*~
-org/*\#
 *.tex
 *.pdf
