@@ -1,45 +1,62 @@
 #+TITLE: EMACS CONFIGURATION
+#+STARTUP: overview
 #+OPTIONS: toc:nil
+#+OPTIONS: ^:nil
 
 * Packages
 ** Melpa
+*** Special
+#+begin_src emacs-lisp
+  (require 'use-package-ensure)
+  (setq use-package-always-ensure t)
+(use-package auto-compile
+  :config (auto-compile-on-load-mode))
+(setq load-prefer-newer t)
+#+end_src
+*** Main
 #+BEGIN_SRC emacs-lisp
-	(dolist (package '(evil dash helm transient with-editor
+(dolist (package '(org evil dash helm transient with-editor
     magit org-bullets engine-mode rainbow-delimiters projectile
-    doom-modeline))
-	 (unless (package-installed-p package)
-	   (package-install package))
-	   (require package))
-  
-	(require 'evil)
-	(evil-mode 1)
-	(require 'dash)
-	(require 'org-bullets)
-	(require 'helm)
-      (use-package evil-surround
-	:ensure t
-	:config
-	(global-evil-surround-mode 1))
-    (require 'evil-surround)
+    doom-modeline dumb-jump evil-surround evil-org diff-hl restclient
+    subword htmlize org-appear gnuplot company which-key))
+(unless (package-installed-p package)
+        (package-install package))
+        (require package))
+(require 'org)
+(require 'dash)
+(require 'org-bullets)
+(require 'helm)
+(use-package evil-surround
+    :ensure t
+    :config
+(global-evil-surround-mode 1))
+(require 'evil-surround)
 #+END_SRC
 ** Apt
 #+BEGIN_SRC bash
-APT_PACKAGES=(
-    emacs
-    texlive-latex-recommended
-    texlive-latex-extra
-    texlive-fonts-recommended
-    texlive-base
-    texlive-latex-base
-)
-apt update
-apt install $APT_PACKAGES
+  APT_PACKAGES=(
+      emacs
+      texlive-latex-recommended
+      texlive-latex-extra
+      texlive-fonts-recommended
+      texlive-base
+      texlive-latex-base
+      ripgrep
+  )
+  apt update
+  apt install $APT_PACKAGES
 #+END_SRC
+** Other
+#+begin_src emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/site-packages")
+#+end_src
 
 * Personlig
 #+BEGIN_SRC emacs-lisp
 (setq user-full-name "Carl Ola Fornander")
 (setq user-email-address "ofornander@gmail.com") 
+(setq calendar-latitude 58.4098135)
+(setq calendar-longitude 15.6245252)
 #+END_SRC
 
 * Style
@@ -51,8 +68,12 @@ apt install $APT_PACKAGES
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-(set-face-attribute 'default nil :height 120)
+(set-face-attribute 'default nil :height 180)
 (setq inhibit-splash-screen t)
+(setq ring-bell-function 'ignore)
+(setq scroll-conservatively 100)
+(save-place-mode t)
+(show-paren-mode 1)
 #+END_SRC
 
 ** Org Bullets Mode
@@ -74,7 +95,6 @@ apt install $APT_PACKAGES
 (custom-set-variables
   '(inhibit-startup-screen t)
   '(display-time-24hr-format t)
-
 )
 #+END_SRC
 
@@ -88,6 +108,27 @@ apt install $APT_PACKAGES
  )
 #+END_SRC
 
+* Evil
+#+BEGIN_SRC emacs-lisp
+  (use-package evil
+  :init
+  (setq evil-want-abbrev-expand-on-insert-exit nil
+  evil-want-keybinding nil)
+  :config
+  (evil-mode 1))
+  
+  (use-package evil-surround
+  :config
+  (global-evil-surround-mode 1))
+
+  (use-package evil-org :after org
+  :config
+  (add-hook 'org-mode-hook 'evil-org-mode)
+  (add-hook 'evil-org-mode-hook
+	    (lambda () (evil-org-set-key-theme)))
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
+#+END_SRC
 * Tex
 #+begin_src emacs-lisp
 ;;; AUCTEX
@@ -105,61 +146,75 @@ apt install $APT_PACKAGES
 (setq TeX-PDF-mode t)
 #+END_SRC
 
-* Mappings
+* Fullscreen
 #+BEGIN_SRC emacs-lisp
-(defun fullscreen ()
-  (interactive)
-  (set-frame-parameter nil 'fullscreen
-		       (if (frame-parameter nil 'fullscreen) nil 'fullboth))
-  (progn
-    (if fboundp 'tool-bar-mode) (tool-bar-mode -1))
-  (menu-bar-mode -1)
-  (scroll-bar-mode -1)
-)
-(global-set-key [f11] 'fullscreen)
+	(defun fullscreen ()
+		(interactive)
+		(set-frame-parameter nil 'fullscreen
+						 (if (frame-parameter nil 'fullscreen) nil 'fullboth))
+		(progn
+			(if fboundp 'tool-bar-mode) (tool-bar-mode -1))
+		(menu-bar-mode -1)
+		(scroll-bar-mode -1)
+	)
+	(global-set-key [f11] 'fullscreen)
+	
 #+END_SRC
 * Orgmode
 *** General
 #+BEGIN_SRC emacs-lisp
-  (require 'org)
-  (org-babel-load-file "~/org/org_config.org")
+(use-package org
+    :ensure org-plus-contrib
+    :config
+    (require 'org-tempo))
+    (org-babel-load-file "~/org/org_config.org")
+  
+(use-package org-appear
+  :hook (org-mode . org-appear-mode))
+  (setq org-pretty-entities t)
+  (setq org-adapt-indentation nil)
+  
+(setq org-hide-emphasis-markers t)
+(setq org-hide-leading-stars t)
 #+END_SRC
-
 ** Org Babel
 #+BEGIN_SRC emacs-lisp
-  (org-babel-do-load-languages 'org-babel-load-languages
-      '(
-  (shell . t)
-  (plantuml . t)))
-  
-(setq org-plantuml-jar-path (expand-file-name "~/plantuml.jar"))
-(add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
-#+END_SRC
-** test plantuml
-#+BEGIN_SRC plantuml :file my-diagram.png
-participant Participant as Foo
-actor       Actor       as Foo1
-boundary    Boundary    as Foo2
-control     Control     as Foo3
-entity      Entity      as Foo4
-database    Database    as Foo5
-collections Collections as Foo6
-queue       Queue       as Foo7
-Foo -> Foo1 : To actor 
-Foo -> Foo2 : To boundary
-Foo -> Foo3 : To control
-Foo -> Foo4 : To entity
-Foo -> Foo5 : To database
-Foo -> Foo6 : To collections
-Foo -> Foo7: To queue
+  (require 'ob-erlang)
+   (org-babel-do-load-languages 'org-babel-load-languages
+        '(
+      (shell . t)
+     (python . t)
+     (gnuplot . t)
+     (erlang . t)
+    (plantuml . t)))
+    (setq org-confirm-babel-evaluate nil)
+  (use-package htmlize)
+  (setq org-plantuml-jar-path (expand-file-name "~/plantuml.jar"))
+  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
 #+END_SRC
 
-#+CAPTION: This is the caption for the next table (or link)
-[[file:my-diagram.png]]
+	(setq org-latex-pdf-process
+      '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
 * Helm
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "M-x") 'helm-M-x)
+(use-package helm
+:config
+(require 'helm-config)
+:init
+(helm-mode 1)
+:bind
+(("M-x"     . helm-M-x) ;; Evaluate functions
+    ("C-x C-f" . helm-find-files) ;; Open or create files
+    ("C-x b"   . helm-mini) ;; Select buffers
+    ("C-x C-r" . helm-recentf) ;; Select recently saved files
+    ("C-c i"   . helm-imenu) ;; Select document heading
+    ("M-y"     . helm-show-kill-ring) ;; Show the kill ring
+    :map helm-map
+    ("C-z" . helm-select-action)
+    ("<tab>" . helm-execute-persistent-action)))
 #+END_SRC
 
 * Engine-mode
@@ -182,3 +237,76 @@ Foo -> Foo7: To queue
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 #+END_SRC
 
+* Dump-jump
+#+BEGIN_SRC emacs-lisp
+(use-package dumb-jump
+    :config
+    (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+    (define-key evil-normal-state-map (kbd "M-.") 'xref-find-definitions))
+#+END_SRC
+
+* Git stuff
+#+BEGIN_SRC emacs-lisp
+  (use-package diff-hl
+  :config
+  (add-hook 'prog-mode-hook 'turn-on-diff-hl-mode)
+  (add-hook 'vc-dir-mode-hook 'turn-on-diff-hl-mode))
+#+END_SRC
+
+* Subword
+#+BEGIN_SRC emacs-lisp
+(use-package subword
+  :config (global-subword-mode 1))
+#+END_SRC
+* Programming
+#+BEGIN_SRC emacs-lisp
+(setq-default tab-width 2)
+(setq-default indent-tabs-mode nil)
+#+END_SRC
+
+* Always kill current buffer
+#+begin_src emacs-lisp
+	(defun hrs/kill-current-buffer ()
+  "Kill the current buffer without prompting."
+  (interactive)
+  (kill-buffer (current-buffer)))
+
+(global-set-key (kbd "C-x k") 'hrs/kill-current-buffer)
+	
+#+end_src
+
+* Eww...
+#+begin_src emacs-lisp
+  (defun eww-open-in-new-window ()
+  "Split window and open eww in new buffer"
+  (interactive)
+  (evil-window-vsplit)
+  (eww-open-in-new-buffer))
+  (define-key org-mode-map (kbd "C-c o") 'eww-open-in-new-window)
+#+end_src
+
+* Highlight current line
+#+begin_src emacs-lisp
+(global-hl-line-mode)
+#+end_src
+
+* Company - Auto Completion
+#+begin_src emacs-lisp
+  (use-package company
+  :config
+  (setq company-idle-delay 0
+          company-minimum-prefix-length 3
+          company-selection-wrap-around t
+          company-dabbrev-downcase nil))
+  (global-company-mode)
+#+end_src
+
+* Which-key
+#+begin_src emacs-lisp
+(use-package which-key
+    :config
+(which-key-mode)
+(setq which-key-idle 2
+which-key-idle-dely 50)
+(which-key-setup-minibuffer))
+#+end_src

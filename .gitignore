@@ -2,6 +2,11 @@ elpa/*
 transient/*
 org/*
 bookmarks
+*.html
+*.el
+!init.el
+!site-packages/*
+*.last
 *~
 *\#
 *.tex
