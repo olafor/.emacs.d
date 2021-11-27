@@ -302,3 +302,11 @@ Install during first setup with "M-x all-the-icons-install-fonts"
 which-key-idle-dely 50)
 (which-key-setup-minibuffer))
 #+end_src
+
+* Projectile
+#+begin_src emacs-lisp
+(projectile-mode +1)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+(setq projectile-completion-system 'helm)
+(helm-projectile-on)
+#+end_src
