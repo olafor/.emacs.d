@@ -1,14 +1,15 @@
-# Min huvudsakliga konfiguration för Emacs
+# Konfiguration för Emacs
 * Main orgmode configuration provided separately
 * Not usable out-of-the-box without the external orgmode configuration
 
-## Condensed Configuration (TBD)
+## Condensed Configuration
 * Available in branch "condensed"
 * No dependencies outside of Emacs
 * No external orgmode configuration
 
 ## Setup
 ### Install Packages
+Only for Master Version
 ```shell
 APT_PACKAGES=(
     emacs
@@ -24,4 +25,7 @@ apt install $APT_PACKAGES
 ```
 
 ### Install  Icons & Fonts
-M-x all-the-icons-install-fonts
+Use the following command with M-x during first setup:
+```emacs-lisp
+all-the-icons-install-fonts
+```

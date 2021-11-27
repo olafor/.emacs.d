@@ -84,10 +84,10 @@
 #+END_SRC
 
 ** Themes
+Install during first setup with "M-x all-the-icons-install-fonts"
 #+BEGIN_SRC emacs-lisp
   (require 'doom-modeline)
   (doom-modeline-mode 1)
-  ;all-the-icons-install-fonts
 #+END_SRC
 
 * Custom Set Variables
@@ -135,30 +135,25 @@
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq-default TeX-master nil)
-
 (add-hook 'LaTeX-mode-hook 'visual-line-mode)
 (add-hook 'LaTeX-mode-hook 'flyspell-mode)
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
 (setq reftex-plug-into-AUCTeX t)
-
 (setq TeX-PDF-mode t)
 #+END_SRC
 
 * Fullscreen
 #+BEGIN_SRC emacs-lisp
-	(defun fullscreen ()
-		(interactive)
-		(set-frame-parameter nil 'fullscreen
-						 (if (frame-parameter nil 'fullscreen) nil 'fullboth))
-		(progn
-			(if fboundp 'tool-bar-mode) (tool-bar-mode -1))
-		(menu-bar-mode -1)
-		(scroll-bar-mode -1)
-	)
-	(global-set-key [f11] 'fullscreen)
-	
+(defun fullscreen ()
+    (interactive)
+    (set-frame-parameter nil 'fullscreen
+            (if (frame-parameter nil 'fullscreen) nil 'fullboth))
+    (progn
+    (if fboundp 'tool-bar-mode) (tool-bar-mode -1))
+    (menu-bar-mode -1)
+    (scroll-bar-mode -1))
+(global-set-key [f11] 'fullscreen)
 #+END_SRC
 * Orgmode
 *** General
@@ -216,7 +211,6 @@
     ("C-z" . helm-select-action)
     ("<tab>" . helm-execute-persistent-action)))
 #+END_SRC
-
 * Engine-mode
 #+BEGIN_SRC emacs-lisp
 (require 'engine-mode)
@@ -266,23 +260,21 @@
 
 * Always kill current buffer
 #+begin_src emacs-lisp
-	(defun hrs/kill-current-buffer ()
-  "Kill the current buffer without prompting."
-  (interactive)
-  (kill-buffer (current-buffer)))
-
+(defun hrs/kill-current-buffer ()
+"Kill the current buffer without prompting."
+(interactive)
+(kill-buffer (current-buffer)))
 (global-set-key (kbd "C-x k") 'hrs/kill-current-buffer)
-	
 #+end_src
 
 * Eww...
 #+begin_src emacs-lisp
-  (defun eww-open-in-new-window ()
-  "Split window and open eww in new buffer"
-  (interactive)
-  (evil-window-vsplit)
-  (eww-open-in-new-buffer))
-  (define-key org-mode-map (kbd "C-c o") 'eww-open-in-new-window)
+(defun eww-open-in-new-window ()
+"Split window and open eww in new buffer"
+(interactive)
+(evil-window-vsplit)
+(eww-open-in-new-buffer))
+(define-key org-mode-map (kbd "C-c o") 'eww-open-in-new-window)
 #+end_src
 
 * Highlight current line
@@ -292,13 +284,13 @@
 
 * Company - Auto Completion
 #+begin_src emacs-lisp
-  (use-package company
-  :config
-  (setq company-idle-delay 0
-          company-minimum-prefix-length 3
-          company-selection-wrap-around t
-          company-dabbrev-downcase nil))
-  (global-company-mode)
+(use-package company
+:config
+(setq company-idle-delay 0
+        company-minimum-prefix-length 3
+        company-selection-wrap-around t
+        company-dabbrev-downcase nil))
+(global-company-mode)
 #+end_src
 
 * Which-key
