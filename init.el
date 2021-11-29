@@ -1,7 +1,6 @@
 (require 'package)
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("org" . "http://elpa.gnu/packages") t)
 (package-initialize)
 
 (when (not (package-installed-p 'use-package))
