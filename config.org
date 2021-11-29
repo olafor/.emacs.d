@@ -18,7 +18,7 @@
 (dolist (package '(org evil dash helm transient with-editor
     magit org-bullets engine-mode rainbow-delimiters projectile
     doom-modeline evil-surround evil-org diff-hl restclient
-    subword htmlize org-appear company which-key))
+    subword htmlize org-appear company which-key helm-projectile))
 (unless (package-installed-p package)
         (package-install package))
         (require package))
@@ -134,7 +134,7 @@ Not part of /condensed/ branch
 	
 #+END_SRC
 * Orgmode
-*** General
+** General
 #+BEGIN_SRC emacs-lisp
 (use-package org
     :ensure org-plus-contrib
@@ -158,6 +158,100 @@ Not part of /condensed/ branch
     (setq org-confirm-babel-evaluate nil)
   (use-package htmlize)
 #+END_SRC
+** Condensed
+*** General
+#+BEGIN_SRC emacs-lisp
+  (defun org-summary-todo (n-done n-not-done)
+    "Switch entry to DONE when all subentries are done, to TODO otherwise."
+    (let (org-log-done org-log-states)   ; turn off logging
+      (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
+  
+  (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+  
+  (add-hook 'org-capture-mode-hook 'evil-insert-state)
+  (setq org-startup-with-inline-images t)
+*** Agenda/Calendar
+#+BEGIN_SRC emacs-lisp
+  (setq org-clock-persist 'history)
+  (org-clock-persistence-insinuate)
+  
+  (define-key global-map "\C-cl" 'org-store-link)
+  (define-key global-map "\C-ca" 'org-agenda)
+  
+  (setq org-log-done t)
+  (setq org-list-indent-offset 1)
+  
+  (setq org-agenda-span 14)
+  (setq org-agenda-start-on-weekday nil)
+  (setq org-deadline-warning-days 0)
+  (setq calendar-week-start-day 1)
+  
+#+END_SRC
+
+*** Org Habits
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'org-modules 'org-habit)
+  (require 'org-habit)
+#+END_SRC
+*** GTP-specifikt
+#+BEGIN_SRC emacs-lisp
+    (setq org-agenda-files '(
+  "~/org/inkorg.org"
+  "~/org/gtd.org"
+  "~/org/notifierare.org"
+  "~/org/vanor.org"))
+  
+        (setq org-refile-targets '(("~/org/gtd.org" :maxlevel . 3)
+           ("~/org/eventuellt.org" :level . 1)
+           ("~/org/notifierare.org" :maxlevel . 2)))
+  
+      (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+  
+    (setq org-agenda-custom-commands 
+    '(("o" "På kontoret" tags-todo "@kontoret"
+       ((org-agenda-overriding-header "Kontoret")))))
+#+END_SRC
+*** Org Capture
+#+BEGIN_SRC emacs-lisp
+  (setq org-default-notes-file (concat org-directory "~/org/anteckningar.org"))
+
+  (global-set-key (kbd "C-c c") 'org-capture)
+
+  (defvar org-capture-templates '())
+
+  (add-to-list 'org-capture-templates
+      '("t" "Todo [inkorg]"
+      entry
+      (file+headline "~/.emacs.d/inkorg.org" "Tasks")
+      "* TODO %?\n  %iEntered on %U\n"))
+
+  (add-to-list 'org-capture-templates
+      '("g" "Todo"
+      entry (file+headline "~/.emacs.d/gtd.org" "Tasks")
+      "* TODO %?\n  %iEntered on %U\n"))
+
+  (add-to-list 'org-capture-templates
+      '("e" "Todo" entry (file+headline "~/.emacs.d/eventuellt.org" "Tasks")
+      "* TODO %?\n  %iEntered on %U\n"))
+
+  (add-to-list 'org-capture-templates
+      '("n" "Notifierare"
+          entry 
+      (file+headline "~/.emacs.d/notifierare.org" "Tasks")
+      "* TODO %?\n  %iEntered on %U\n"))
+
+  (add-to-list 'org-capture-templates
+      '("a" "Anteckning" 
+      entry 
+      (file+datetree "~/.emacs.d/anteckningar.org")
+      "* %?\nEntered on %U\n  %i\n"))
+
+*** Disable sub/suberscripts
+#+begin_src emacs-lisp
+(setq org-export-with-sub-superscripts nil)
+#+end_src
+
+
 * Helm
 #+BEGIN_SRC emacs-lisp
 (use-package helm
@@ -272,8 +366,9 @@ which-key-idle-dely 50)
 
 * Projectile
 #+begin_src emacs-lisp
-(projectile-mode +1)
-(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-(setq projectile-completion-system 'helm)
-(helm-projectile-on)
+  (projectile-mode +1)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (setq projectile-completion-system 'helm)
+  (require 'help-projectile)
+  (helm-projectile-on)
 #+end_src
