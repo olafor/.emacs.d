@@ -154,7 +154,7 @@ Not part of /condensed/ branch
   (require 'ob-erlang)
    (org-babel-do-load-languages 'org-babel-load-languages
         '(
-      (shell . t)
+      (shell . t)))
     (setq org-confirm-babel-evaluate nil)
   (use-package htmlize)
 #+END_SRC
