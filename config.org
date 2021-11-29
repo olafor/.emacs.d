@@ -17,8 +17,8 @@
 #+BEGIN_SRC emacs-lisp
 (dolist (package '(org evil dash helm transient with-editor
     magit org-bullets engine-mode rainbow-delimiters projectile
-    doom-modeline dumb-jump evil-surround evil-org diff-hl restclient
-    subword htmlize org-appear gnuplot company which-key))
+    doom-modeline evil-surround evil-org diff-hl restclient
+    subword htmlize org-appear company which-key))
 (unless (package-installed-p package)
         (package-install package))
         (require package))
@@ -33,19 +33,7 @@
 (require 'evil-surround)
 #+END_SRC
 ** Apt
-#+BEGIN_SRC bash
-  APT_PACKAGES=(
-      emacs
-      texlive-latex-recommended
-      texlive-latex-extra
-      texlive-fonts-recommended
-      texlive-base
-      texlive-latex-base
-      ripgrep
-  )
-  apt update
-  apt install $APT_PACKAGES
-#+END_SRC
+Not part of /master/ branch 
 ** Other
 #+begin_src emacs-lisp
 (add-to-list 'load-path "~/.emacs.d/site-packages")
@@ -130,22 +118,7 @@
   (evil-org-agenda-set-keys))
 #+END_SRC
 * Tex
-#+begin_src emacs-lisp
-;;; AUCTEX
-(setq TeX-auto-save t)
-(setq TeX-parse-self t)
-(setq-default TeX-master nil)
-
-(add-hook 'LaTeX-mode-hook 'visual-line-mode)
-(add-hook 'LaTeX-mode-hook 'flyspell-mode)
-(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-(setq reftex-plug-into-AUCTeX t)
-
-(setq TeX-PDF-mode t)
-#+END_SRC
-
+Not part of /condensed/ branch
 * Fullscreen
 #+BEGIN_SRC emacs-lisp
 	(defun fullscreen ()
@@ -167,7 +140,6 @@
     :ensure org-plus-contrib
     :config
     (require 'org-tempo))
-    (org-babel-load-file "~/org/org_config.org")
   
 (use-package org-appear
   :hook (org-mode . org-appear-mode))
@@ -183,21 +155,9 @@
    (org-babel-do-load-languages 'org-babel-load-languages
         '(
       (shell . t)
-     (python . t)
-     (gnuplot . t)
-     (erlang . t)
-    (plantuml . t)))
     (setq org-confirm-babel-evaluate nil)
   (use-package htmlize)
-  (setq org-plantuml-jar-path (expand-file-name "~/plantuml.jar"))
-  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
 #+END_SRC
-
-	(setq org-latex-pdf-process
-      '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-
 * Helm
 #+BEGIN_SRC emacs-lisp
 (use-package helm
@@ -238,12 +198,11 @@
 #+END_SRC
 
 * Dump-jump
-#+BEGIN_SRC emacs-lisp
+TBD: Alternative
 (use-package dumb-jump
     :config
     (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
     (define-key evil-normal-state-map (kbd "M-.") 'xref-find-definitions))
-#+END_SRC
 
 * Git stuff
 #+BEGIN_SRC emacs-lisp
