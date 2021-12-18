@@ -7,8 +7,8 @@
 ** Melpa
 *** Special
 #+begin_src emacs-lisp
-  (require 'use-package-ensure)
-  (setq use-package-always-ensure t)
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
 (use-package auto-compile
   :config (auto-compile-on-load-mode))
 (setq load-prefer-newer t)
@@ -18,7 +18,7 @@
 (dolist (package '(org evil dash helm transient with-editor
     magit org-bullets engine-mode rainbow-delimiters projectile
     doom-modeline dumb-jump evil-surround evil-org diff-hl restclient
-    subword htmlize org-appear gnuplot company which-key))
+    subword htmlize org-appear gnuplot company which-key elixir-mode))
 (unless (package-installed-p package)
         (package-install package))
         (require package))
@@ -34,17 +34,17 @@
 #+END_SRC
 ** Apt
 #+BEGIN_SRC bash
-  APT_PACKAGES=(
-      emacs
-      texlive-latex-recommended
-      texlive-latex-extra
-      texlive-fonts-recommended
-      texlive-base
-      texlive-latex-base
-      ripgrep
-  )
-  apt update
-  apt install $APT_PACKAGES
+APT_PACKAGES=(
+  emacs
+  texlive-latex-recommended
+  texlive-latex-extra
+  texlive-fonts-recommended
+  texlive-base
+  texlive-latex-base
+  ripgrep
+)
+apt update
+apt install $APT_PACKAGES
 #+END_SRC
 ** Other
 #+begin_src emacs-lisp
@@ -54,9 +54,10 @@
 * Personlig
 #+BEGIN_SRC emacs-lisp
 (setq user-full-name "Carl Ola Fornander")
-(setq user-email-address "ofornander@gmail.com") 
+(setq user-email-address "o.fornander@gmail.com")
 (setq calendar-latitude 58.4098135)
 (setq calendar-longitude 15.6245252)
+(setq calendar-location-name "Linköping")
 #+END_SRC
 
 * Style
@@ -68,12 +69,14 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
+(set-window-scroll-bars (minibuffer-window) nil nil)
 (set-face-attribute 'default nil :height 180)
 (setq inhibit-splash-screen t)
 (setq ring-bell-function 'ignore)
 (setq scroll-conservatively 100)
 (save-place-mode t)
 (show-paren-mode 1)
+(setq-default indent-tabs-mode nil)
 #+END_SRC
 
 ** Org Bullets Mode
@@ -86,8 +89,8 @@
 ** Themes
 Install during first setup with "M-x all-the-icons-install-fonts"
 #+BEGIN_SRC emacs-lisp
-  (require 'doom-modeline)
-  (doom-modeline-mode 1)
+(require 'doom-modeline)
+(doom-modeline-mode 1)
 #+END_SRC
 
 * Custom Set Variables
@@ -156,42 +159,49 @@ Install during first setup with "M-x all-the-icons-install-fonts"
 (global-set-key [f11] 'fullscreen)
 #+END_SRC
 * Orgmode
-*** General
+** General
 #+BEGIN_SRC emacs-lisp
-(use-package org
-    :ensure org-plus-contrib
-    :config
-    (require 'org-tempo))
-    (org-babel-load-file "~/org/org_config.org")
+  (use-package org
+      :ensure org-plus-contrib
+      :config
+      (require 'org-tempo))
+      (org-babel-load-file "~/org/org_config.org")
   
-(use-package org-appear
-  :hook (org-mode . org-appear-mode))
-  (setq org-pretty-entities t)
+  (use-package org-appear
+    :hook (org-mode . org-appear-mode))
+    (setq org-pretty-entities t)
+    (setq org-adapt-indentation nil)
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t)
   (setq org-adapt-indentation nil)
   
-(setq org-hide-emphasis-markers t)
-(setq org-hide-leading-stars t)
+  (setq org-hide-emphasis-markers t)
+  (setq org-hide-leading-stars t)
 #+END_SRC
+** Svensk kalender
+#+begin_src emacs-lisp
+(load "sv-kalender")
+#+end_src
 ** Org Babel
 #+BEGIN_SRC emacs-lisp
-  (require 'ob-erlang)
-   (org-babel-do-load-languages 'org-babel-load-languages
-        '(
-      (shell . t)
-     (python . t)
-     (gnuplot . t)
-     (erlang . t)
-    (plantuml . t)))
-    (setq org-confirm-babel-evaluate nil)
-  (use-package htmlize)
-  (setq org-plantuml-jar-path (expand-file-name "~/plantuml.jar"))
-  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+(require 'ob-erlang)
+(org-babel-do-load-languages 'org-babel-load-languages
+    '(
+  (shell . t)
+ (ruby . t)
+ (python . t)
+ (gnuplot . t)
+ (erlang . t)
+(plantuml . t)))
+(setq org-confirm-babel-evaluate nil)
+(use-package htmlize)
+(setq org-plantuml-jar-path (expand-file-name "~/plantuml.jar"))
+(add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
 #+END_SRC
-
-	(setq org-latex-pdf-process
-      '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-        "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+(setq org-latex-pdf-process
+  '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+    "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+    "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
 * Helm
 #+BEGIN_SRC emacs-lisp
@@ -241,10 +251,10 @@ Install during first setup with "M-x all-the-icons-install-fonts"
 
 * Git stuff
 #+BEGIN_SRC emacs-lisp
-  (use-package diff-hl
-  :config
-  (add-hook 'prog-mode-hook 'turn-on-diff-hl-mode)
-  (add-hook 'vc-dir-mode-hook 'turn-on-diff-hl-mode))
+(use-package diff-hl
+:config
+(add-hook 'prog-mode-hook 'turn-on-diff-hl-mode)
+(add-hook 'vc-dir-mode-hook 'turn-on-diff-hl-mode))
 #+END_SRC
 
 * Subword
@@ -309,4 +319,10 @@ which-key-idle-dely 50)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 (setq projectile-completion-system 'helm)
 (helm-projectile-on)
+#+end_src
+
+* Save-place-mode
+#+begin_src emacs-lisp
+(save-place-mode)
+  
 #+end_src

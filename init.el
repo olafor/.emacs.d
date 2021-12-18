@@ -27,7 +27,7 @@
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (helm-projectile auto-compile gruvbox-theme spacemacs-theme which-key company helm-bibtex org-appear htmlize org-plus-contrib restclient evil-org doom-modeline doom-modelin projectile rainbow-delimiter evil-surround engine-mode use-package org-bullets org magit helm evil))))
+    (elixir-mode helm-projectile auto-compile gruvbox-theme spacemacs-theme which-key company helm-bibtex org-appear htmlize org-plus-contrib restclient evil-org doom-modeline doom-modelin projectile rainbow-delimiter evil-surround engine-mode use-package org-bullets org magit helm evil))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
