@@ -15,22 +15,23 @@
 #+end_src
 *** Main
 #+BEGIN_SRC emacs-lisp
-(dolist (package '(org evil dash helm transient with-editor
-    magit org-bullets engine-mode rainbow-delimiters projectile
-    doom-modeline dumb-jump evil-surround evil-org diff-hl restclient
-    subword htmlize org-appear gnuplot company which-key elixir-mode))
-(unless (package-installed-p package)
-        (package-install package))
-        (require package))
-(require 'org)
-(require 'dash)
-(require 'org-bullets)
-(require 'helm)
-(use-package evil-surround
-    :ensure t
-    :config
-(global-evil-surround-mode 1))
-(require 'evil-surround)
+  (dolist (package '(org evil dash helm transient with-editor
+      magit org-bullets engine-mode rainbow-delimiters projectile
+      doom-modeline dumb-jump evil-surround evil-org diff-hl restclient
+      subword htmlize org-appear gnuplot company which-key elixir-mode
+      svg-tag-mode))
+  (unless (package-installed-p package)
+          (package-install package))
+          (require package))
+  (require 'org)
+  (require 'dash)
+  (require 'org-bullets)
+  (require 'helm)
+  (use-package evil-surround
+      :ensure t
+      :config
+  (global-evil-surround-mode 1))
+  (require 'evil-surround)
 #+END_SRC
 ** Apt
 #+BEGIN_SRC bash
@@ -326,3 +327,12 @@ which-key-idle-dely 50)
 (save-place-mode)
   
 #+end_src
+
+* Svg-test 
+(require 'svg-tag-mode)
+(setq svg-tag-tags
+    '(("TODO" . ((lambda (tag) (svg-tag-make "TODO" ))))))
+(setq svg-tag-tags
+    '(("DONE" . ((lambda (tag) (svg-tag-make "DONE" ))))))
+(global-svg-tag-mode)
+
