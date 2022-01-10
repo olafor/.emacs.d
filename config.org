@@ -287,7 +287,6 @@ Install during first setup with "M-x all-the-icons-install-fonts"
 (eww-open-in-new-buffer))
 (define-key org-mode-map (kbd "C-c o") 'eww-open-in-new-window)
 #+end_src
-
 * Highlight current line
 #+begin_src emacs-lisp
 (global-hl-line-mode)
@@ -325,14 +324,5 @@ which-key-idle-dely 50)
 * Save-place-mode
 #+begin_src emacs-lisp
 (save-place-mode)
-  
 #+end_src
-
-* Svg-test 
-(require 'svg-tag-mode)
-(setq svg-tag-tags
-    '(("TODO" . ((lambda (tag) (svg-tag-make "TODO" ))))))
-(setq svg-tag-tags
-    '(("DONE" . ((lambda (tag) (svg-tag-make "DONE" ))))))
-(global-svg-tag-mode)
 
