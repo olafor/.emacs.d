@@ -15,15 +15,13 @@
 #+end_src
 *** Main
 #+BEGIN_SRC emacs-lisp
-  (dolist (package '(org evil dash helm transient with-editor
+  (dolist (package '(evil dash helm transient with-editor
       magit org-bullets engine-mode rainbow-delimiters projectile
       doom-modeline dumb-jump evil-surround evil-org diff-hl restclient
-      subword htmlize org-appear gnuplot company which-key elixir-mode
-      svg-tag-mode))
+      subword htmlize org-appear gnuplot company which-key elixir-mode))
   (unless (package-installed-p package)
           (package-install package))
           (require package))
-  (require 'org)
   (require 'dash)
   (require 'org-bullets)
   (require 'helm)
