@@ -85,19 +85,11 @@ apt install $APT_PACKAGES
 (org-bullets-mode t)
 #+END_SRC
 
-** Themes
-Install during first setup with "M-x all-the-icons-install-fonts"
-#+BEGIN_SRC emacs-lisp
-(require 'doom-modeline)
-(doom-modeline-mode 1)
-#+END_SRC
-
 * Custom Set Variables
 #+BEGIN_SRC emacs-lisp
 (custom-set-variables
   '(inhibit-startup-screen t)
-  '(display-time-24hr-format t)
-)
+  '(display-time-24hr-format t))
 #+END_SRC
 
 * Custom Set Faces
@@ -109,6 +101,51 @@ Install during first setup with "M-x all-the-icons-install-fonts"
  ;; If there is more than one, they won't work right.
  )
 #+END_SRC
+
+* Orgmode
+** General
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+      :ensure org-plus-contrib
+      :config
+      (require 'org-tempo))
+      (org-babel-load-file "~/org/org_config.org")
+  
+  (use-package org-appear
+    :hook (org-mode . org-appear-mode))
+    (setq org-pretty-entities t)
+    (setq org-adapt-indentation nil)
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t)
+  (setq org-adapt-indentation nil)
+  
+  (setq org-hide-emphasis-markers t)
+  (setq org-hide-leading-stars t)
+#+END_SRC
+** Svensk kalender
+#+begin_src emacs-lisp
+(require 'sv-kalender)
+#+end_src
+** Org Babel
+#+BEGIN_SRC emacs-lisp
+(require 'ob-erlang)
+(org-babel-do-load-languages 'org-babel-load-languages
+    '(
+  (shell . t)
+ (ruby . t)
+ (python . t)
+ (gnuplot . t)
+ (erlang . t)
+(plantuml . t)))
+(setq org-confirm-babel-evaluate nil)
+(use-package htmlize)
+(setq org-plantuml-jar-path (expand-file-name "~/plantuml.jar"))
+(add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+#+END_SRC
+(setq org-latex-pdf-process
+  '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+    "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+    "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
 * Evil
 #+BEGIN_SRC emacs-lisp
@@ -157,51 +194,6 @@ Install during first setup with "M-x all-the-icons-install-fonts"
     (scroll-bar-mode -1))
 (global-set-key [f11] 'fullscreen)
 #+END_SRC
-* Orgmode
-** General
-#+BEGIN_SRC emacs-lisp
-  (use-package org
-      :ensure org-plus-contrib
-      :config
-      (require 'org-tempo))
-      (org-babel-load-file "~/org/org_config.org")
-  
-  (use-package org-appear
-    :hook (org-mode . org-appear-mode))
-    (setq org-pretty-entities t)
-    (setq org-adapt-indentation nil)
-  (setq org-src-fontify-natively t)
-  (setq org-src-tab-acts-natively t)
-  (setq org-adapt-indentation nil)
-  
-  (setq org-hide-emphasis-markers t)
-  (setq org-hide-leading-stars t)
-#+END_SRC
-** Svensk kalender
-#+begin_src emacs-lisp
-(load "sv-kalender")
-#+end_src
-** Org Babel
-#+BEGIN_SRC emacs-lisp
-(require 'ob-erlang)
-(org-babel-do-load-languages 'org-babel-load-languages
-    '(
-  (shell . t)
- (ruby . t)
- (python . t)
- (gnuplot . t)
- (erlang . t)
-(plantuml . t)))
-(setq org-confirm-babel-evaluate nil)
-(use-package htmlize)
-(setq org-plantuml-jar-path (expand-file-name "~/plantuml.jar"))
-(add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
-#+END_SRC
-(setq org-latex-pdf-process
-  '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-    "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-    "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-
 * Helm
 #+BEGIN_SRC emacs-lisp
 (use-package helm
@@ -317,6 +309,7 @@ which-key-idle-dely 50)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 (setq projectile-completion-system 'helm)
 (helm-projectile-on)
+(setq frame-title-format '((:eval (projectile-project-name))))
 #+end_src
 
 * Save-place-mode
@@ -324,3 +317,10 @@ which-key-idle-dely 50)
 (save-place-mode)
 #+end_src
 
+
+* Modeline test
+#+begin_src emacs-lisp
+(setq mode-line-format
+    (list
+    " (%m) %b : %l "))
+#+end_src
