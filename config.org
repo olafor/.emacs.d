@@ -18,7 +18,7 @@
   (dolist (package '(evil dash helm transient with-editor
       magit org-bullets engine-mode rainbow-delimiters projectile
       doom-modeline dumb-jump evil-surround evil-org diff-hl restclient
-      subword htmlize org-appear gnuplot company which-key elixir-mode))
+      subword htmlize org-appear company which-key elixir-mode))
   (unless (package-installed-p package)
           (package-install package))
           (require package))
@@ -134,7 +134,6 @@ apt install $APT_PACKAGES
   (shell . t)
  (ruby . t)
  (python . t)
- (gnuplot . t)
  (erlang . t)
 (plantuml . t)))
 (setq org-confirm-babel-evaluate nil)
@@ -317,10 +316,10 @@ which-key-idle-dely 50)
 (save-place-mode)
 #+end_src
 
-
 * Modeline test
 #+begin_src emacs-lisp
 (setq mode-line-format
     (list
     " (%m) %b : %l "))
 #+end_src
+
